@@ -43,6 +43,7 @@ public class FatPortUtils {
     public static Map<String, Block> PortLinks = new HashMap<String, Block>();
     public Map<String, String[]> portData = new HashMap<String, String[]>();
     public Map<String, Integer> portTravel = new HashMap<String, Integer>();
+    public Map<String, Integer> linkData = new HashMap<String, Integer>();
     FatPortDatabase service = FatPortDatabase.getInstance();
     private FatPort plugin;
 
@@ -189,6 +190,40 @@ public class FatPortUtils {
             statement.executeUpdate(queryPort);
         } catch (SQLException e) {
             plugin.debug("Could not delete port! " + e);
+        }
+    }
+
+    public boolean isLinkBlock(Location loc, String p, boolean b) {
+        boolean bool = false;
+        String w = loc.getWorld().getName();
+        int x = loc.getBlockX();
+        int y = loc.getBlockY();
+        int z = loc.getBlockZ();
+        try {
+            Connection connection = service.getConnection();
+            Statement statement = connection.createStatement();
+            String queryLink = "SELECT l_id FROM links WHERE world = '" + w + "' AND x = " + x + " AND y = " + y + " AND z = " + z;
+            ResultSet rsLink = statement.executeQuery(queryLink);
+            if (rsLink.next()) {
+                linkData.put(p, rsLink.getInt("l_id"));
+                bool = true;
+            }
+            rsLink.close();
+            statement.close();
+        } catch (SQLException e) {
+            plugin.debug("Could not check port block! " + e);
+        }
+        return bool;
+    }
+
+    public void deleteLink(int lid) {
+        try {
+            Connection connection = service.getConnection();
+            Statement statement = connection.createStatement();
+            String queryLink = "DELETE FROM links WHERE l_id = " + lid;
+            statement.executeUpdate(queryLink);
+        } catch (SQLException e) {
+            plugin.debug("Could not delete link! " + e);
         }
     }
 }

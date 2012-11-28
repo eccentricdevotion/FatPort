@@ -59,5 +59,16 @@ public class FatPortBlockListener implements Listener {
                 event.setCancelled(true);
             }
         }
+        if (plugin.portCheck.isLinkBlock(loc, pName, true)) {
+            if (player.hasPermission("fatport.remove")) {
+                int linkID = plugin.portCheck.linkData.get(pName);
+                plugin.portCheck.deleteLink(linkID);
+                plugin.portCheck.linkData.remove(pName);
+                player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Link Block" + ChatColor.RED + " has been removed.");
+            } else {
+                player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove MultiPorts.");
+                event.setCancelled(true);
+            }
+        }
     }
 }
