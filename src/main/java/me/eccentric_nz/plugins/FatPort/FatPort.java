@@ -78,6 +78,7 @@ public class FatPort extends JavaPlugin {
 
         getCommand("addport").setExecutor(new FatPortAddCommand(this));
         getCommand("linkport").setExecutor(new FatPortLinkCommand(this));
+        getCommand("listport").setExecutor(new FatPortListCommand(this));
 
         portCheck = new FatPortUtils(this);
 

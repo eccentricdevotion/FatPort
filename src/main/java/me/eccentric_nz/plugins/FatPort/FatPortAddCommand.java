@@ -70,7 +70,7 @@ public class FatPortAddCommand implements CommandExecutor {
                 FatPortPlayerListener.SelectBlock.remove(player.getName());
 
             } else {
-                player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + name + ChatColor.RED + " already exists.");
+                player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + name + ChatColor.RED + " already exists, or block is in use.");
             }
         }
         return false;

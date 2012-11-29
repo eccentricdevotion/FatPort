@@ -1,6 +1,6 @@
 name: FatPort
 main: me.eccentric_nz.plugins.FatPort.FatPort
-version: 1.0
+version: 0.2beta
 dev-url: http://dev.bukkit.org/server-mods/fatport
 permissions:
   fatport.add:
@@ -15,6 +15,9 @@ permissions:
   fatport.remove:
     description: Let's you remove MultiPorts.
     default: op
+  fatport.list:
+    description: Let's you list MultiPorts.
+    default: op
 commands:
   addport:
     description: Let's you add a MultiPorts.
@@ -22,3 +25,6 @@ commands:
   linkport:
     description: Let's you link MultiPorts.
     usage: /<command> [name]
+  listport:
+    description: Let's you list MultiPorts.
+    usage: /<command>
