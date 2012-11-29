@@ -81,15 +81,23 @@ public class FatPortUtils {
         try {
             Connection connection = service.getConnection();
             Statement statement = connection.createStatement();
+            // check block is not in use
             String queryPort = "SELECT name FROM ports WHERE world = '" + w + "' AND x = " + x + " AND y = " + y + " AND z = " + z;
             ResultSet rsPort = statement.executeQuery(queryPort);
             if (rsPort.isBeforeFirst()) {
                 b = true;
             }
             rsPort.close();
+            // check name is not in use
+            String queryName = "SELECT name FROM ports WHERE name = '" + name + "'";
+            ResultSet rsName = statement.executeQuery(queryName);
+            if (rsName.isBeforeFirst()) {
+                b = true;
+            }
+            rsName.close();
             statement.close();
         } catch (SQLException e) {
-            plugin.debug("Could not check port block! " + e);
+            plugin.debug("Could not check port block and name! " + e);
         }
         return b;
     }
@@ -188,6 +196,8 @@ public class FatPortUtils {
             Statement statement = connection.createStatement();
             String queryPort = "DELETE FROM ports WHERE p_id = " + pid;
             statement.executeUpdate(queryPort);
+            String queryLinks = "DELETE FROM links WHERE p_id = " + pid;
+            statement.executeUpdate(queryLinks);
         } catch (SQLException e) {
             plugin.debug("Could not delete port! " + e);
         }
