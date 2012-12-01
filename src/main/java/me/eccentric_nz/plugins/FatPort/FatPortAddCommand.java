@@ -72,6 +72,7 @@ public class FatPortAddCommand implements CommandExecutor {
             } else {
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + name + ChatColor.RED + " already exists, or block is in use.");
             }
+            return true;
         }
         return false;
     }
