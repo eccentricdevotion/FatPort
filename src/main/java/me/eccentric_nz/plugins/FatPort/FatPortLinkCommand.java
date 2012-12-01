@@ -60,6 +60,10 @@ public class FatPortLinkCommand implements CommandExecutor {
                 return false;
             }
             Block block = FatPortPlayerListener.SelectBlock.get(player.getName());
+            if (block == null) {
+                sender.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Block has not been selected.");
+                return true;
+            }
             Location loc = block.getLocation();
             plugin.portCheck.insertLink(portID, loc);
             player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Blocks linked.");
