@@ -1,2 +1,5 @@
 wand: BONE
+use_radius: false
+min: 0
+max: 10
 debug: false
