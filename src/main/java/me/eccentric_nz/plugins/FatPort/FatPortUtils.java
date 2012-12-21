@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -65,6 +66,37 @@ public class FatPortUtils {
                 int z = rsLink.getInt("z");
                 loc = new Location(w, x, y, z);
                 loc.add(.5, 1, .5);
+            }
+        } catch (SQLException e) {
+            plugin.debug("Could not get link block! " + e);
+        }
+        return loc;
+    }
+
+    public Location getRadialDest(int pid) {
+        Random rand = new Random();
+        Location loc = null;
+        int min = plugin.getConfig().getInt("min");
+        int max = plugin.getConfig().getInt("max");
+        int diff = max - min + 1;
+        int xx = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : 0 - (rand.nextInt(diff) + min);
+        int zz = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : 0 - (rand.nextInt(diff) + min);
+        try {
+            Connection connection = service.getConnection();
+            Statement statement = connection.createStatement();
+            String queryLink = "SELECT * FROM links WHERE p_id = " + pid + " ORDER BY RANDOM()";
+            ResultSet rsLink = statement.executeQuery(queryLink);
+            if (rsLink.next()) {
+                World w = plugin.getServer().getWorld(rsLink.getString("world"));
+                int x = rsLink.getInt("x");
+                int y = rsLink.getInt("y");
+                int z = rsLink.getInt("z");
+                loc = new Location(w, x, y, z);
+                loc.add((xx + .5), 1, (zz + .5));
+                // get highest block Y at this location
+                while (!w.getBlockAt(loc).isEmpty()) {
+                    loc.setY(loc.getY()+1);
+                }
             }
         } catch (SQLException e) {
             plugin.debug("Could not get link block! " + e);
