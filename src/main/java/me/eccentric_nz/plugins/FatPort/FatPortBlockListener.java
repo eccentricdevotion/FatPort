@@ -55,7 +55,7 @@ public class FatPortBlockListener implements Listener {
                 plugin.portCheck.portData.remove(pName);
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Block " + ChatColor.AQUA + portName + ChatColor.RED + " has been removed.");
             } else {
-                player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove MultiPorts.");
+                player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove FatPorts.");
                 event.setCancelled(true);
             }
         }
@@ -66,7 +66,7 @@ public class FatPortBlockListener implements Listener {
                 plugin.portCheck.linkData.remove(pName);
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Link Block " + ChatColor.RED + " has been removed.");
             } else {
-                player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove MultiPorts.");
+                player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove FatPorts.");
                 event.setCancelled(true);
             }
         }
