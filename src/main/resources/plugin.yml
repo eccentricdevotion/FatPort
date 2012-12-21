@@ -1,6 +1,6 @@
 name: FatPort
 main: me.eccentric_nz.plugins.FatPort.FatPort
-version: 1.0.1
+version: 1.0.2
 dev-url: http://dev.bukkit.org/server-mods/fatport
 permissions:
   fatport.add:
