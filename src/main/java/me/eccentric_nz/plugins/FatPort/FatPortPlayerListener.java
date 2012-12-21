@@ -76,11 +76,11 @@ public class FatPortPlayerListener implements Listener {
         //getY()-.2 = at what point below the player to scan
         Location loc = new Location(world, event.getTo().getX(), event.getTo().getY() - .2, event.getTo().getZ());
         Block blockin = world.getBlockAt(loc);
-        boolean isMultiPort = plugin.portCheck.isPortBlock(loc, pName, false);
+        boolean isFatPort = plugin.portCheck.isPortBlock(loc, pName, false);
 
-        if (isMultiPort && player.hasPermission("fatport.use")) {
+        if (isFatPort && player.hasPermission("fatport.use")) {
             int pid = plugin.portCheck.portTravel.get(pName);
-            destLoc = plugin.portCheck.getDest(pid);
+            destLoc = (plugin.getConfig().getBoolean("use_radius")) ? plugin.portCheck.getRadialDest(pid): plugin.portCheck.getDest(pid);
             if (destLoc != null) {
                 destLoc.setPitch(player.getLocation().getPitch());
                 destLoc.setYaw(player.getLocation().getYaw());
