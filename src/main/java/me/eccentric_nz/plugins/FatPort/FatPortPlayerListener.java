@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,24 +71,33 @@ public class FatPortPlayerListener implements Listener {
         World world = event.getTo().getWorld();
         Player player = event.getPlayer();
         String pName = player.getName();
-        String cakeName;
         Location destLoc;
-        Location pLoc = player.getLocation();
         //getY()-.2 = at what point below the player to scan
         Location loc = new Location(world, event.getTo().getX(), event.getTo().getY() - .2, event.getTo().getZ());
-        Block blockin = world.getBlockAt(loc);
         boolean isFatPort = plugin.portCheck.isPortBlock(loc, pName, false);
 
         if (isFatPort && player.hasPermission("fatport.use")) {
             int pid = plugin.portCheck.portTravel.get(pName);
-            destLoc = (plugin.getConfig().getBoolean("use_radius")) ? plugin.portCheck.getRadialDest(pid): plugin.portCheck.getDest(pid);
-            if (destLoc != null) {
-                destLoc.setPitch(player.getLocation().getPitch());
-                destLoc.setYaw(player.getLocation().getYaw());
-                //event.setTo(destLoc);
-                player.teleport(destLoc);
+            // check if this is a TP block or a Command block
+            if (plugin.portCheck.hasCommand(pid)) {
+                // run command
+                String cmd = plugin.portCheck.getCommand(pid, pName);
+                if (plugin.portCheck.playerIsAllowed(pName)) {
+                    CommandSender console = plugin.getServer().getConsoleSender();
+                    plugin.getServer().dispatchCommand(console, cmd);
+                    plugin.portCheck.setUse(pName);
+                }
             } else {
-                player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "You fell down a hole!");
+                // send to random teleport location
+                destLoc = (plugin.getConfig().getBoolean("use_radius")) ? plugin.portCheck.getRadialDest(pid) : plugin.portCheck.getDest(pid);
+                if (destLoc != null) {
+                    destLoc.setPitch(player.getLocation().getPitch());
+                    destLoc.setYaw(player.getLocation().getYaw());
+                    //event.setTo(destLoc);
+                    player.teleport(destLoc);
+                } else {
+                    player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "You fell down a hole!");
+                }
             }
         }
     }
