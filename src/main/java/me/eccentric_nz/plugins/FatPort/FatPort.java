@@ -45,7 +45,6 @@ public class FatPort extends JavaPlugin {
     FatPortDatabase service = FatPortDatabase.getInstance();
     private final FatPortPlayerListener playerListener = new FatPortPlayerListener(this);
     private final FatPortBlockListener blockListener = new FatPortBlockListener(this);
-    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     public static Server server;
     public FatPortUtils portCheck;
     private FileConfiguration config = null;
@@ -82,6 +81,7 @@ public class FatPort extends JavaPlugin {
         getCommand("addport").setExecutor(new FatPortAddCommand(this));
         getCommand("linkport").setExecutor(new FatPortLinkCommand(this));
         getCommand("listport").setExecutor(new FatPortListCommand(this));
+        getCommand("addcmd").setExecutor(new FatPortCmdCommand(this));
 
         portCheck = new FatPortUtils(this);
 
