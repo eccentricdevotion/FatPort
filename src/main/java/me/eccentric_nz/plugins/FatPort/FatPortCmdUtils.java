@@ -104,14 +104,17 @@ public class FatPortCmdUtils {
                 String queryCmd = "SELECT num_uses FROM commands WHERE c_id = " + cid;
                 ResultSet rsCmd = statement.executeQuery(queryCmd);
                 if (rsCmd.next()) {
-                    int cmd_num = rsCmd.getInt("num_uses");
-                    String queryPlayer = "SELECT uses FROM command_uses WHERE c_id = " + cid + " AND player = '" + name + "'";
+                    int cmd_num = (rsCmd.getInt("num_uses") > 0) ? Integer.MAX_VALUE : rsCmd.getInt("num_uses");
+                    String queryPlayer = "SELECT uses, last_use FROM command_uses WHERE c_id = " + cid + " AND player = '" + name + "'";
                     ResultSet rsPlayer = statement.executeQuery(queryPlayer);
                     int uses = 0;
+                    long now = System.currentTimeMillis();
+                    long last = 0;
                     if (rsPlayer.next()) {
                         uses = rsPlayer.getInt("uses");
+                        last = rsPlayer.getLong("last_use") + (plugin.getConfig().getLong("cooldown") * 1000);
                     }
-                    if (uses < cmd_num) {
+                    if (uses < cmd_num && last < now) {
                         bool = true;
                     }
                 }
@@ -133,10 +136,11 @@ public class FatPortCmdUtils {
                 String queryPlayer = "SELECT u_id FROM command_uses WHERE c_id = " + cid + " AND player = '" + name + "'";
                 ResultSet rsPlayer = statement.executeQuery(queryPlayer);
                 String queryUses;
+                long time = System.currentTimeMillis();
                 if (rsPlayer.next()) {
-                    queryUses = "UPDATE command_uses SET uses = (uses+1) WHERE u_id = " + rsPlayer.getInt("u_id");
+                    queryUses = "UPDATE command_uses SET uses = (uses+1), last_use = " + time + " WHERE u_id = " + rsPlayer.getInt("u_id");
                 } else {
-                    queryUses = "INSERT INTO command_uses (c_id, player, uses) VALUES (" + cid + ", '" + name + "', 1)";
+                    queryUses = "INSERT INTO command_uses (c_id, player, uses, last_use) VALUES (" + cid + ", '" + name + "', 1, " + time + ")";
                 }
                 statement.executeUpdate(queryUses);
                 portCommand.remove(name);
