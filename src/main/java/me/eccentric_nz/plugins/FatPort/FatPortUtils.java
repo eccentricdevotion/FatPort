@@ -34,7 +34,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -45,7 +44,6 @@ public class FatPortUtils {
     public static Map<String, Block> PortLinks = new HashMap<String, Block>();
     public Map<String, String[]> portData = new HashMap<String, String[]>();
     public Map<String, Integer> portTravel = new HashMap<String, Integer>();
-    public Map<String, Integer> portCommand = new HashMap<String, Integer>();
     public Map<String, Integer> linkData = new HashMap<String, Integer>();
     FatPortDatabase service = FatPortDatabase.getInstance();
     private FatPort plugin;
@@ -194,20 +192,6 @@ public class FatPortUtils {
         }
     }
 
-    public void insertCmd(int pid, String cmd, int num) {
-        try {
-            Connection connection = service.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO commands (p_id, command, num_uses) VALUES (?,?,?)");
-            // name 1, world 2, x 3, y 4, z 5
-            statement.setInt(1, pid);
-            statement.setString(2, cmd);
-            statement.setInt(3, num);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.debug("Could not save command! " + e);
-        }
-    }
-
     public boolean isPortBlock(Location loc, String p, boolean b) {
         boolean bool = false;
         String w = loc.getWorld().getName();
@@ -246,6 +230,8 @@ public class FatPortUtils {
             statement.executeUpdate(queryPort);
             String queryLinks = "DELETE FROM links WHERE p_id = " + pid;
             statement.executeUpdate(queryLinks);
+            String queryCmds = "DELETE FROM commands WHERE p_id = " + pid;
+            statement.executeUpdate(queryCmds);
         } catch (SQLException e) {
             plugin.debug("Could not delete port! " + e);
         }
@@ -272,94 +258,6 @@ public class FatPortUtils {
             plugin.debug("Could not check port block! " + e);
         }
         return bool;
-    }
-
-    public boolean hasCommand(int pid) {
-        boolean bool = false;
-        try {
-            Connection connection = service.getConnection();
-            Statement statement = connection.createStatement();
-            String queryCmd = "SELECT c_id FROM commands WHERE p_id = " + pid;
-            ResultSet rsCmd = statement.executeQuery(queryCmd);
-            if (rsCmd.isBeforeFirst()) {
-                bool = true;
-            }
-            rsCmd.close();
-            statement.close();
-        } catch (SQLException e) {
-            plugin.debug("Could not check for command! " + e);
-        }
-        return bool;
-    }
-
-    public String getCommand(int pid, String name) {
-        String command = "";
-        try {
-            Connection connection = service.getConnection();
-            Statement statement = connection.createStatement();
-            String queryCmd = "SELECT * FROM commands WHERE p_id = " + pid + " ORDER BY RANDOM()";
-            ResultSet rsCmd = statement.executeQuery(queryCmd);
-            String tmp = rsCmd.getString("command");
-            portCommand.put(name, rsCmd.getInt("c_id"));
-            command = StringUtils.replace(tmp, "@p", name);
-            rsCmd.close();
-            statement.close();
-        } catch (SQLException e) {
-            plugin.debug("Could not get command! " + e);
-        }
-        return command;
-    }
-
-    public boolean playerIsAllowed(String name) {
-        boolean bool = false;
-        if (plugin.portCheck.portCommand.containsKey(name)) {
-            int cid = plugin.portCheck.portCommand.get(name);
-            try {
-                Connection connection = service.getConnection();
-                Statement statement = connection.createStatement();
-                String queryCmd = "SELECT c_num_uses FROM commands WHERE c_id = " + cid;
-                ResultSet rsCmd = statement.executeQuery(queryCmd);
-                if (rsCmd.next()) {
-                    int cmd_num = rsCmd.getInt("c_num_uses");
-                    String queryPlayer = "SELECT uses FROM command_uses WHERE c_id = " + cid + "AND player = '" + name + "'";
-                    ResultSet rsPlayer = statement.executeQuery(queryPlayer);
-                    int uses = 0;
-                    if (rsPlayer.next()) {
-                        uses = rsPlayer.getInt("uses");
-                    }
-                    if (uses < cmd_num) {
-                        bool = true;
-                    }
-                }
-                rsCmd.close();
-                statement.close();
-            } catch (SQLException e) {
-                plugin.debug("Could not check for command! " + e);
-            }
-        }
-        return bool;
-    }
-
-    public void setUse(String name) {
-        if (portCommand.containsKey(name)) {
-            int cid = portCommand.get(name);
-            try {
-                Connection connection = service.getConnection();
-                Statement statement = connection.createStatement();
-                String queryPlayer = "SELECT u_id FROM command_uses WHERE c_id = " + cid + " AND player = '" + name + "'";
-                ResultSet rsPlayer = statement.executeQuery(queryPlayer);
-                String queryUses;
-                if (rsPlayer.next()) {
-                    queryUses = "UPDATE command_uses SET uses = (uses+1) WHERE u_id = " + rsPlayer.getInt("u_id");
-                } else {
-                    queryUses = "INSERT INTO command_uses (c_id, player, uses) VALUES (" + cid + ", '" + name + "', 1)";
-                }
-                statement.executeUpdate(queryUses);
-                portCommand.remove(name);
-            } catch (SQLException e) {
-                plugin.debug("Could not save command! " + e);
-            }
-        }
     }
 
     public void deleteLink(int lid) {
