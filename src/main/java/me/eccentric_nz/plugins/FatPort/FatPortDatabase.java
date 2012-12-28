@@ -32,6 +32,10 @@ public class FatPortDatabase {
             statement.executeUpdate(queryPorts);
             String queryLinks = "CREATE TABLE IF NOT EXISTS links (l_id INTEGER PRIMARY KEY NOT NULL, p_id INTEGER, world TEXT, x INTEGER, y INTEGER, z INTEGER)";
             statement.executeUpdate(queryLinks);
+            String queryCmds = "CREATE TABLE IF NOT EXISTS commands (c_id INTEGER PRIMARY KEY NOT NULL, p_id INTEGER, command TEXT, num_uses INTEGER)";
+            statement.executeUpdate(queryCmds);
+            String queryUses = "CREATE TABLE IF NOT EXISTS command_uses (u_id INTEGER PRIMARY KEY NOT NULL, c_id INTEGER, player TEXT, uses INTEGER)";
+            statement.executeUpdate(queryUses);
             statement.close();
         } catch (SQLException e) {
             System.err.println(FatPortConstants.MY_PLUGIN_NAME + " Create table error: " + e);
