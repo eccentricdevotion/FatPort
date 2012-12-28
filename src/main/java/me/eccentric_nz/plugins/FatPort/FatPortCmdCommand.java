@@ -48,13 +48,14 @@ public class FatPortCmdCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.AQUA + name + ChatColor.RED + " does not exist.");
                 return false;
             }
+            int num = Integer.parseInt(args[1]);
             int count = args.length;
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < count; i++) {
                 sb.append(args[i]).append(" ");
             }
             String cmd = sb.toString().substring(0, sb.length() - 1);
-            plugin.portCheck.insertCmd(portID, cmd);
+            plugin.portCheck.insertCmd(portID, cmd, num);
             sender.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Commamnd added to Port Block.");
             return true;
         }

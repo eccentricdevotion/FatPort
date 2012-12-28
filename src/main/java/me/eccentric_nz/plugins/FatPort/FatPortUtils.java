@@ -194,13 +194,14 @@ public class FatPortUtils {
         }
     }
 
-    public void insertCmd(int pid, String cmd) {
+    public void insertCmd(int pid, String cmd, int num) {
         try {
             Connection connection = service.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO commands (p_id, command) VALUES (?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO commands (p_id, command, num_uses) VALUES (?,?,?)");
             // name 1, world 2, x 3, y 4, z 5
             statement.setInt(1, pid);
             statement.setString(2, cmd);
+            statement.setInt(3, num);
             statement.executeUpdate();
         } catch (SQLException e) {
             plugin.debug("Could not save command! " + e);
