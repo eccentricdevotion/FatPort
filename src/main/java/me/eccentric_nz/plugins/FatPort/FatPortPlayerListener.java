@@ -79,13 +79,15 @@ public class FatPortPlayerListener implements Listener {
         if (isFatPort && player.hasPermission("fatport.use")) {
             int pid = plugin.portCheck.portTravel.get(pName);
             // check if this is a TP block or a Command block
-            if (plugin.portCheck.hasCommand(pid)) {
+            if (plugin.cmdCheck.hasCommand(pid)) {
                 // run command
-                String cmd = plugin.portCheck.getCommand(pid, pName);
-                if (plugin.portCheck.playerIsAllowed(pName)) {
+                String cmd = plugin.cmdCheck.getCommand(pid, pName);
+                plugin.debug("the command is: " + cmd);
+                if (plugin.cmdCheck.playerIsAllowed(pName)) {
+                    plugin.debug("player is allowed");
                     CommandSender console = plugin.getServer().getConsoleSender();
                     plugin.getServer().dispatchCommand(console, cmd);
-                    plugin.portCheck.setUse(pName);
+                    plugin.cmdCheck.setUse(pName);
                 }
             } else {
                 // send to random teleport location

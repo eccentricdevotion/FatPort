@@ -55,7 +55,7 @@ public class FatPortCmdCommand implements CommandExecutor {
                 sb.append(args[i]).append(" ");
             }
             String cmd = sb.toString().substring(0, sb.length() - 1);
-            plugin.portCheck.insertCmd(portID, cmd, num);
+            plugin.cmdCheck.insertCmd(portID, cmd, num);
             sender.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Commamnd added to Port Block.");
             return true;
         }

@@ -47,6 +47,7 @@ public class FatPort extends JavaPlugin {
     private final FatPortBlockListener blockListener = new FatPortBlockListener(this);
     public static Server server;
     public FatPortUtils portCheck;
+    public FatPortCmdUtils cmdCheck;
     private FileConfiguration config = null;
 
     @Override
@@ -84,6 +85,7 @@ public class FatPort extends JavaPlugin {
         getCommand("addcmd").setExecutor(new FatPortCmdCommand(this));
 
         portCheck = new FatPortUtils(this);
+        cmdCheck = new FatPortCmdUtils(this);
 
         try {
             MetricsLite metrics = new MetricsLite(this);
