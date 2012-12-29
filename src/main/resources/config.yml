@@ -3,4 +3,3 @@ use_radius: false
 min: 0
 max: 10
 debug: false
-cooldown: 5

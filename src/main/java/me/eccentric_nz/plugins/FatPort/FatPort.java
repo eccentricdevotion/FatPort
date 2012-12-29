@@ -28,7 +28,6 @@ package me.eccentric_nz.plugins.FatPort;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;

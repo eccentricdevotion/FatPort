@@ -45,13 +45,14 @@ public class FatPortCmdUtils {
         this.plugin = plugin;
     }
 
-    public void insertCmd(int pid, String cmd, int num) {
+    public void insertCmd(int pid, String cmd, int num, int cooldown) {
         try {
             Connection connection = service.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO commands (p_id, command, num_uses) VALUES (?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO commands (p_id, command, num_uses, cooldown) VALUES (?,?,?,?)");
             statement.setInt(1, pid);
             statement.setString(2, cmd);
             statement.setInt(3, num);
+            statement.setInt(4, cooldown);
             statement.executeUpdate();
         } catch (SQLException e) {
             plugin.debug("Could not save command! " + e);
@@ -101,10 +102,11 @@ public class FatPortCmdUtils {
             try {
                 Connection connection = service.getConnection();
                 Statement statement = connection.createStatement();
-                String queryCmd = "SELECT num_uses FROM commands WHERE c_id = " + cid;
+                String queryCmd = "SELECT num_uses, cooldown FROM commands WHERE c_id = " + cid;
                 ResultSet rsCmd = statement.executeQuery(queryCmd);
                 if (rsCmd.next()) {
-                    int cmd_num = (rsCmd.getInt("num_uses") > 0) ? Integer.MAX_VALUE : rsCmd.getInt("num_uses");
+                    int cmd_num = (rsCmd.getInt("num_uses") < 0) ? Integer.MAX_VALUE : rsCmd.getInt("num_uses");
+                    long cooldown = (rsCmd.getLong("cooldown") > 0) ? rsCmd.getLong("cooldown") : 0L;
                     String queryPlayer = "SELECT uses, last_use FROM command_uses WHERE c_id = " + cid + " AND player = '" + name + "'";
                     ResultSet rsPlayer = statement.executeQuery(queryPlayer);
                     int uses = 0;
@@ -112,7 +114,7 @@ public class FatPortCmdUtils {
                     long last = 0;
                     if (rsPlayer.next()) {
                         uses = rsPlayer.getInt("uses");
-                        last = rsPlayer.getLong("last_use") + (plugin.getConfig().getLong("cooldown") * 1000);
+                        last = rsPlayer.getLong("last_use") + (cooldown * 1000L);
                     }
                     if (uses < cmd_num && last < now) {
                         bool = true;

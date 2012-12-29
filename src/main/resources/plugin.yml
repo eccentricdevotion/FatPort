@@ -27,7 +27,7 @@ commands:
     usage: /<command> [name]
   addcmd:
     description: Let's you add a command to a FatPort.
-    usage: /<command> [name] [no. of uses] [command + arguments]
+    usage: /<command> [name] [no. of uses] [cooldown] [command + arguments]
   linkport:
     description: Let's you link FatPorts.
     usage: /<command> [name]
