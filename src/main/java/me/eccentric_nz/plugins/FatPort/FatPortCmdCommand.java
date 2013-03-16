@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Rob Rate 2012.
+ * Copyright Rob Rate 2012.
  *
  * Licensed under The GNU General Public License v3.0, a copy of the licence is included in the JAR file.
  *
