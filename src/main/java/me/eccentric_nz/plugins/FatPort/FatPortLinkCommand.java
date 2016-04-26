@@ -59,7 +59,7 @@ public class FatPortLinkCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.AQUA + name + ChatColor.RED + " does not exist.");
                 return false;
             }
-            Block block = FatPortPlayerListener.SelectBlock.get(player.getName());
+            Block block = FatPortPlayerListener.SelectBlock.get(player.getUniqueId());
             if (block == null) {
                 sender.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Block has not been selected.");
                 return true;

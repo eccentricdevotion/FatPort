@@ -56,7 +56,7 @@ public class FatPortAddCommand implements CommandExecutor {
             String name = arg[0];
             // check name is valid
 
-            Block block = FatPortPlayerListener.SelectBlock.get(player.getName());
+            Block block = FatPortPlayerListener.SelectBlock.get(player.getUniqueId());
             if (block == null) {
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Block has not been selected.");
                 return false;
@@ -67,7 +67,7 @@ public class FatPortAddCommand implements CommandExecutor {
             if (!blockInUse) {
                 plugin.portCheck.insertPort(name, loc);
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Block " + ChatColor.AQUA + name + ChatColor.RESET + " has been added.");
-                FatPortPlayerListener.SelectBlock.remove(player.getName());
+                FatPortPlayerListener.SelectBlock.remove(player.getUniqueId());
 
             } else {
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + name + ChatColor.RED + " already exists, or block is in use.");

@@ -56,7 +56,7 @@ public class FatPort extends JavaPlugin {
                 getDataFolder().mkdir();
             }
         } catch (Exception e) {
-            System.out.println("FatPort could not create directory!");
+            System.err.println("FatPort could not create directory!");
         }
 
         getDataFolder().setWritable(true);

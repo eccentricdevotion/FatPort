@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class FatPortDatabase {
 
-    private static FatPortDatabase instance = new FatPortDatabase();
+    private static final FatPortDatabase instance = new FatPortDatabase();
     public Connection connection = null;
     public Statement statement;
     private FatPort plugin;

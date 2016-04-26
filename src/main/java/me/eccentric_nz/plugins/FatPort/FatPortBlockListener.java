@@ -26,6 +26,7 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class FatPortBlockListener implements Listener {
 
-    private FatPort plugin;
+    private final FatPort plugin;
 
     public FatPortBlockListener(FatPort plugin) {
         this.plugin = plugin;
@@ -45,25 +46,25 @@ public class FatPortBlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Location loc = event.getBlock().getLocation();
         Player player = event.getPlayer();
-        String pName = player.getName();
-        if (plugin.portCheck.isPortBlock(loc, pName, true)) {
+        UUID uuid = player.getUniqueId();
+        if (plugin.portCheck.isPortBlock(loc, uuid, true)) {
             if (player.hasPermission("fatport.remove")) {
-                String data[] = plugin.portCheck.portData.get(pName);
+                String data[] = plugin.portCheck.portData.get(uuid);
                 int portID = Integer.parseInt(data[0]);
                 String portName = data[1];
                 plugin.portCheck.deletePort(portID);
-                plugin.portCheck.portData.remove(pName);
+                plugin.portCheck.portData.remove(uuid);
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Block " + ChatColor.AQUA + portName + ChatColor.RED + " has been removed.");
             } else {
                 player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove FatPorts.");
                 event.setCancelled(true);
             }
         }
-        if (plugin.portCheck.isLinkBlock(loc, pName, true)) {
+        if (plugin.portCheck.isLinkBlock(loc, uuid, true)) {
             if (player.hasPermission("fatport.remove")) {
-                int linkID = plugin.portCheck.linkData.get(pName);
+                int linkID = plugin.portCheck.linkData.get(uuid);
                 plugin.portCheck.deleteLink(linkID);
-                plugin.portCheck.linkData.remove(pName);
+                plugin.portCheck.linkData.remove(uuid);
                 player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Link Block " + ChatColor.RED + " has been removed.");
             } else {
                 player.sendMessage(ChatColor.DARK_RED + "You do not have permission to remove FatPorts.");

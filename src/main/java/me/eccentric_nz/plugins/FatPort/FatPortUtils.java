@@ -34,6 +34,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -42,11 +43,11 @@ public class FatPortUtils {
 
     public static Map<String, Block> PortBlock = new HashMap<String, Block>();
     public static Map<String, Block> PortLinks = new HashMap<String, Block>();
-    public Map<String, String[]> portData = new HashMap<String, String[]>();
-    public Map<String, Integer> portTravel = new HashMap<String, Integer>();
-    public Map<String, Integer> linkData = new HashMap<String, Integer>();
+    public Map<UUID, String[]> portData = new HashMap<UUID, String[]>();
+    public Map<UUID, Integer> portTravel = new HashMap<UUID, Integer>();
+    public Map<UUID, Integer> linkData = new HashMap<UUID, Integer>();
     FatPortDatabase service = FatPortDatabase.getInstance();
-    private FatPort plugin;
+    private final FatPort plugin;
 
     public FatPortUtils(FatPort plugin) {
         this.plugin = plugin;
@@ -192,7 +193,7 @@ public class FatPortUtils {
         }
     }
 
-    public boolean isPortBlock(Location loc, String p, boolean b) {
+    public boolean isPortBlock(Location loc, UUID uuid, boolean b) {
         boolean bool = false;
         String w = loc.getWorld().getName();
         int x = loc.getBlockX();
@@ -208,9 +209,9 @@ public class FatPortUtils {
                 data[0] = rsPort.getString("p_id");
                 data[1] = rsPort.getString("name");
                 if (b == true) {
-                    portData.put(p, data);
+                    portData.put(uuid, data);
                 } else {
-                    portTravel.put(p, rsPort.getInt("p_id"));
+                    portTravel.put(uuid, rsPort.getInt("p_id"));
                 }
                 bool = true;
             }
@@ -237,7 +238,7 @@ public class FatPortUtils {
         }
     }
 
-    public boolean isLinkBlock(Location loc, String p, boolean b) {
+    public boolean isLinkBlock(Location loc, UUID uuid, boolean b) {
         boolean bool = false;
         String w = loc.getWorld().getName();
         int x = loc.getBlockX();
@@ -249,7 +250,7 @@ public class FatPortUtils {
             String queryLink = "SELECT l_id FROM links WHERE world = '" + w + "' AND x = " + x + " AND y = " + y + " AND z = " + z;
             ResultSet rsLink = statement.executeQuery(queryLink);
             if (rsLink.next()) {
-                linkData.put(p, rsLink.getInt("l_id"));
+                linkData.put(uuid, rsLink.getInt("l_id"));
                 bool = true;
             }
             rsLink.close();

@@ -28,6 +28,7 @@ package me.eccentric_nz.plugins.FatPort;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,7 +43,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class FatPortPlayerListener implements Listener {
 
     private final FatPort plugin;
-    public static Map<String, Block> SelectBlock = new HashMap<String, Block>();
+    public static Map<UUID, Block> SelectBlock = new HashMap<UUID, Block>();
 
     public FatPortPlayerListener(FatPort plugin) {
         this.plugin = plugin;
@@ -58,7 +59,7 @@ public class FatPortPlayerListener implements Listener {
             //Allow block / Item in hand here - May make config for any block
             if (player.getItemInHand().getType() == Material.valueOf(plugin.getConfig().getString("wand"))) {
                 if (player.hasPermission("fatport.add")) {
-                    SelectBlock.put(player.getName(), block);
+                    SelectBlock.put(player.getUniqueId(), block);
                     player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Block selected.");
                 }
             }
@@ -70,12 +71,13 @@ public class FatPortPlayerListener implements Listener {
         World world = event.getTo().getWorld();
         Player player = event.getPlayer();
         String pName = player.getName();
+        UUID uuid = player.getUniqueId();
         Location destLoc;
         //getY()-.2 = at what point below the player to scan
         Location loc = new Location(world, event.getTo().getX(), event.getTo().getY() - .2, event.getTo().getZ());
-        boolean isFatPort = plugin.portCheck.isPortBlock(loc, pName, false);
+        boolean isFatPort = plugin.portCheck.isPortBlock(loc, uuid, false);
         if (isFatPort && player.hasPermission("fatport.use")) {
-            int pid = plugin.portCheck.portTravel.get(pName);
+            int pid = plugin.portCheck.portTravel.get(uuid);
             // check if this is a TP block or a Command block
             if (plugin.cmdCheck.hasCommand(pid)) {
                 // run command
