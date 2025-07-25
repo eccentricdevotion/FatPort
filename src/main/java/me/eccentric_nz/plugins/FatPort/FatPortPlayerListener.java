@@ -26,9 +26,6 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -40,10 +37,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class FatPortPlayerListener implements Listener {
 
     private final FatPort plugin;
-    public static Map<UUID, Block> SelectBlock = new HashMap<UUID, Block>();
+    public static Map<UUID, Block> SelectBlock = new HashMap<>();
 
     public FatPortPlayerListener(FatPort plugin) {
         this.plugin = plugin;
@@ -57,7 +58,7 @@ public class FatPortPlayerListener implements Listener {
             Block block = event.getClickedBlock();
 
             //Allow block / Item in hand here - May make config for any block
-            if (player.getItemInHand().getType() == Material.valueOf(plugin.getConfig().getString("wand"))) {
+            if (player.getInventory().getItemInMainHand().getType() == Material.valueOf(plugin.getConfig().getString("wand"))) {
                 if (player.hasPermission("fatport.add")) {
                     SelectBlock.put(player.getUniqueId(), block);
                     player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "Port Block selected.");
@@ -93,7 +94,6 @@ public class FatPortPlayerListener implements Listener {
                 if (destLoc != null) {
                     destLoc.setPitch(player.getLocation().getPitch());
                     destLoc.setYaw(player.getLocation().getYaw());
-                    //event.setTo(destLoc);
                     player.teleport(destLoc);
                 } else {
                     player.sendMessage(FatPortConstants.MY_PLUGIN_NAME + "You fell down a hole!");

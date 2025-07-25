@@ -26,20 +26,15 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 
 public class FatPortCmdUtils {
 
-    public Map<String, Integer> portCommand = new HashMap<String, Integer>();
+    public Map<String, Integer> portCommand = new HashMap<>();
     FatPortDatabase service = FatPortDatabase.getInstance();
-    private FatPort plugin;
+    private final FatPort plugin;
 
     public FatPortCmdUtils(FatPort plugin) {
         this.plugin = plugin;
@@ -86,7 +81,7 @@ public class FatPortCmdUtils {
             ResultSet rsCmd = statement.executeQuery(queryCmd);
             String tmp = rsCmd.getString("command");
             portCommand.put(name, rsCmd.getInt("c_id"));
-            command = StringUtils.replace(tmp, "@p", name);
+            command = tmp.replace("@p", name);
             rsCmd.close();
             statement.close();
         } catch (SQLException e) {

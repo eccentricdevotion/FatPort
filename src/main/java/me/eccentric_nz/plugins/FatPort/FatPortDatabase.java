@@ -10,7 +10,6 @@ public class FatPortDatabase {
     private static final FatPortDatabase instance = new FatPortDatabase();
     public Connection connection = null;
     public Statement statement;
-    private FatPort plugin;
 
     public static synchronized FatPortDatabase getInstance() {
         return instance;

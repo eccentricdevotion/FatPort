@@ -26,41 +26,24 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
-import java.io.File;
-import java.io.IOException;
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class FatPort extends JavaPlugin {
 
     protected static FatPort plugin;
-    static File blocks = null;
-    static File links = null;
     FatPortDatabase service = FatPortDatabase.getInstance();
     private final FatPortPlayerListener playerListener = new FatPortPlayerListener(this);
     private final FatPortBlockListener blockListener = new FatPortBlockListener(this);
     public static Server server;
     public FatPortUtils portCheck;
     public FatPortCmdUtils cmdCheck;
-    private FileConfiguration config = null;
 
     @Override
     public void onEnable() {
-        try {
-            if (!getDataFolder().exists()) {
-                getDataFolder().mkdir();
-            }
-        } catch (Exception e) {
-            System.err.println("FatPort could not create directory!");
-        }
-
-        getDataFolder().setWritable(true);
-        getDataFolder().setExecutable(true);
 
         plugin = this;
         this.saveDefaultConfig();
@@ -86,15 +69,7 @@ public class FatPort extends JavaPlugin {
         portCheck = new FatPortUtils(this);
         cmdCheck = new FatPortCmdUtils(this);
 
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
-        File myconfigfile = new File(getDataFolder(), "config.yml");
-        config = YamlConfiguration.loadConfiguration(myconfigfile);
-        if (!config.contains("use_radius")) {
+        if (!getConfig().contains("use_radius")) {
             getConfig().set("use_radius", false);
             getConfig().set("min", 0);
             getConfig().set("max", 10);
@@ -113,17 +88,8 @@ public class FatPort extends JavaPlugin {
         }
     }
 
-    public boolean anonymousCheck(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Cannot execute that command, I don't know who you are!");
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void debug(Object o) {
-        if (getConfig().getBoolean("debug") == true) {
+        if (getConfig().getBoolean("debug")) {
             System.out.println("[FatPort Debug] " + o);
         }
     }

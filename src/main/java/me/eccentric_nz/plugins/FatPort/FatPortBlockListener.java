@@ -26,13 +26,14 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
-import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+
+import java.util.UUID;
 
 public class FatPortBlockListener implements Listener {
 
@@ -49,7 +50,7 @@ public class FatPortBlockListener implements Listener {
         UUID uuid = player.getUniqueId();
         if (plugin.portCheck.isPortBlock(loc, uuid, true)) {
             if (player.hasPermission("fatport.remove")) {
-                String data[] = plugin.portCheck.portData.get(uuid);
+                String[] data = plugin.portCheck.portData.get(uuid);
                 int portID = Integer.parseInt(data[0]);
                 String portName = data[1];
                 plugin.portCheck.deletePort(portID);
@@ -60,7 +61,7 @@ public class FatPortBlockListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        if (plugin.portCheck.isLinkBlock(loc, uuid, true)) {
+        if (plugin.portCheck.isLinkBlock(loc, uuid)) {
             if (player.hasPermission("fatport.remove")) {
                 int linkID = plugin.portCheck.linkData.get(uuid);
                 plugin.portCheck.deleteLink(linkID);

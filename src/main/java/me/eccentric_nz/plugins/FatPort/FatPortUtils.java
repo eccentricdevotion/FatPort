@@ -26,26 +26,20 @@
  */
 package me.eccentric_nz.plugins.FatPort;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.bukkit.Location;
+import org.bukkit.World;
+
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 
 public class FatPortUtils {
 
-    public static Map<String, Block> PortBlock = new HashMap<String, Block>();
-    public static Map<String, Block> PortLinks = new HashMap<String, Block>();
-    public Map<UUID, String[]> portData = new HashMap<UUID, String[]>();
-    public Map<UUID, Integer> portTravel = new HashMap<UUID, Integer>();
-    public Map<UUID, Integer> linkData = new HashMap<UUID, Integer>();
+    public Map<UUID, String[]> portData = new HashMap<>();
+    public Map<UUID, Integer> portTravel = new HashMap<>();
+    public Map<UUID, Integer> linkData = new HashMap<>();
     FatPortDatabase service = FatPortDatabase.getInstance();
     private final FatPort plugin;
 
@@ -80,8 +74,8 @@ public class FatPortUtils {
         int min = plugin.getConfig().getInt("min");
         int max = plugin.getConfig().getInt("max");
         int diff = max - min + 1;
-        int xx = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : 0 - (rand.nextInt(diff) + min);
-        int zz = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : 0 - (rand.nextInt(diff) + min);
+        int xx = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : -(rand.nextInt(diff) + min);
+        int zz = (rand.nextInt(2) == 1) ? rand.nextInt(diff) + min : -(rand.nextInt(diff) + min);
         try {
             Connection connection = service.getConnection();
             Statement statement = connection.createStatement();
@@ -208,7 +202,7 @@ public class FatPortUtils {
                 String[] data = new String[2];
                 data[0] = rsPort.getString("p_id");
                 data[1] = rsPort.getString("name");
-                if (b == true) {
+                if (b) {
                     portData.put(uuid, data);
                 } else {
                     portTravel.put(uuid, rsPort.getInt("p_id"));
@@ -238,7 +232,7 @@ public class FatPortUtils {
         }
     }
 
-    public boolean isLinkBlock(Location loc, UUID uuid, boolean b) {
+    public boolean isLinkBlock(Location loc, UUID uuid) {
         boolean bool = false;
         String w = loc.getWorld().getName();
         int x = loc.getBlockX();
